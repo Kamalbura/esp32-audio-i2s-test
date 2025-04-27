@@ -112,3 +112,50 @@ If you build something cool with this, share it on GitHub and let the community 
 ---
 
 **Repo:** [esp32-audio-i2s-test](https://github.com/Kamalbura/esp32-audio-i2s-test)
+
+---
+
+## 🛠️ Hardware Setup & Pinouts
+
+### Required Hardware
+
+- **ESP32 board** (any dev board with I2S support)
+- **I2S microphone** (e.g., INMP441)
+- **(Optional) I2S speaker/amplifier** (for loopback/speaker tests)
+- **USB cable** (for ESP32-PC connection)
+- **Jumper wires** (for connections)
+- **Breadboard** (recommended for prototyping)
+
+### INMP441 to ESP32 Pin Mapping
+
+| INMP441 Pin | ESP32 Pin Example | Description         |
+|-------------|------------------|---------------------|
+| VCC         | 3.3V             | Power (do NOT use 5V) |
+| GND         | GND              | Ground              |
+| WS (LRCL)   | GPIO 25          | Word Select (L/R Clock) |
+| SD          | GPIO 33          | Serial Data (DOUT)  |
+| SCK (BCLK)  | GPIO 32          | Bit Clock           |
+
+**Note:**  
+- Double-check your ESP32 sketch for the exact pin mapping. Some sketches (like `SpeakerTest.ino` or `serial-test.ino`) may use different pins (see comments in each file).
+- Always connect VCC to 3.3V, not 5V, to avoid damaging the mic.
+
+### Typical ESP32 ↔ INMP441 Wiring
+
+```
+INMP441   ESP32
+-------   -----
+VCC    →  3.3V
+GND    →  GND
+WS     →  GPIO 25
+SD     →  GPIO 33
+SCK    →  GPIO 32
+```
+
+### Initial Hardware Checklist
+
+- [ ] Connect the INMP441 mic to the ESP32 as shown above.
+- [ ] Use short, shielded wires for best audio quality.
+- [ ] Power the ESP32 via USB from your PC.
+- [ ] Double-check all connections before powering up.
+- [ ] (Optional) Connect an I2S speaker for playback tests (see `SpeakerTest.ino`).
