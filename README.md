@@ -12,93 +12,62 @@ It's designed for **beginners**—no advanced electronics or programming knowled
 - **Plays back** the audio on your PC with low latency.
 - **Classifies environments** (e.g., Calm, Noisy, Speech).
 - **Reduces noise** for clearer playback.
+- **Bluetooth & DumbDisplay:** Analyze audio wirelessly on your phone.
+- **Web interfaces:** Test and visualize mic input in your browser (simple and advanced).
 
 ---
 
-## 🛠️ Hardware You Need
+## 📱 Alternative Interfaces & Features
 
-- **ESP32 board** (any dev board with I2S support)
-- **I2S microphone** (e.g., INMP441)
-- **USB cable** (for ESP32-PC connection)
-- **Jumper wires** (for connections)
+### DumbDisplay & Bluetooth Audio Analysis
 
----
+- **DumbDisplay**: Use the [DumbDisplay app](https://play.google.com/store/apps/details?id=io.github.astashov.dumbdisplay) with Bluetooth or USB OTG to visualize and analyze audio from your ESP32 mic directly on your phone.  
+  The `dd-working.ino` sketch streams audio and provides a touch-friendly UI for mic, record, and playback, including amplification controls.
 
-## 🔌 How to Connect the INMP441 I2S Mic to ESP32
+### 🌐 Web Interfaces for Mic Testing
 
-| INMP441 Pin | ESP32 Pin Example |
-|-------------|------------------|
-| VCC         | 3.3V             |
-| GND         | GND              |
-| WS (LRCL)   | GPIO 25          |
-| SD          | GPIO 32          |
-| SCK (BCLK)  | GPIO 33          |
+- **Simple Web Interface** (`mic-webserver-done-simple.ino`):  
+  Displays a live waveform of the microphone input using Chart.js. Great for quick checks and basic visualization.
+- **Advanced Web Interface** (`waveform_mic-web-stream.ino`):  
+  Shows waveform history, enables live mic playback in your browser, and provides real-time environment classification (Calm, Normal, Noisy).
 
-**Check your ESP32 code for the exact pin mapping!**  
-Double-check wiring before powering up.
+### 🛠️ Serial and Python Tools
 
----
-
-## 💻 Software Requirements
-
-- **Python 3.8+**
-- [sounddevice](https://python-sounddevice.readthedocs.io/)
-- [numpy](https://numpy.org/)
-- [matplotlib](https://matplotlib.org/)
-- [scipy](https://scipy.org/)
-- [pyserial](https://pyserial.readthedocs.io/)
-
-Install all dependencies with:
-```bash
-pip install sounddevice numpy matplotlib scipy pyserial
-```
-
----
-
-## 🚀 Quick Start Guide
-
-### 1. Flash the ESP32
-
-- Upload the Arduino sketch (`ESP32_Mic_Analyzer.ino`) to your ESP32 using Arduino IDE or PlatformIO.
-- This sketch reads audio from the I2S mic and streams it over USB serial.
-
-### 2. Connect the Microphone
-
-- Wire your INMP441 to the ESP32 as shown above.
-- Double-check connections for VCC, GND, WS, SD, and SCK.
-
-### 3. Run the Python Scripts
-
-- **Edit the serial port** in the Python scripts to match your ESP32's port (e.g., `COM5` on Windows or `/dev/ttyUSB0` on Linux/Mac).
-- For **audio analysis and visualization**, run:
-  ```bash
-  python serial_audio_analyze.py
-  ```
-- For **direct audio playback**, run:
-  ```bash
-  python serial_audio_playback.py
-  ```
+- **Serial Test (`serial-test.ino`)**:  
+  Tests the I2S mic using the Arduino Serial Plotter for quick hardware verification.
+- **Audio Visualizer (`audio_visualizer.py` or `serial_audio_analyze.py`)**:  
+  Visualizes and analyzes audio from the ESP32 using Python, with environment classification.
+- **Audio Playback (`serial_audio_playback.py`)**:  
+  Streams high-quality audio from the ESP32 to your PC speakers or headphones.
 
 ---
 
 ## 📂 File Descriptions
 
-| File | Description |
-|------|-------------|
-| [`ESP32_Mic_Analyzer.ino`](./ESP32_Mic_Analyzer.ino) | Arduino sketch for ESP32. Reads audio from I2S mic and streams raw PCM data over serial. **Flash this to your ESP32.** |
-| [`serial_audio_analyze.py`](./serial_audio_analyze.py) | Python script for real-time audio analysis, visualization, environment classification, and playback. **Run this on your PC.** |
-| [`serial_audio_playback.py`](./serial_audio_playback.py) | Python script for low-latency audio playback from ESP32 serial stream. **Run this for simple listening.** |
+| File/Folder | Description |
+|-------------|-------------|
+| [`ESP32_Mic_Analyzer/ESP32_Mic_Analyzer.ino`](./ESP32_Mic_Analyzer/ESP32_Mic_Analyzer.ino) | Main Arduino sketch for ESP32. Streams audio from I2S mic over serial. |
+| [`serial_audio_analyze.py`](./serial_audio_analyze.py) | Python script for real-time audio analysis, visualization, and playback. |
+| [`serial_audio_playback.py`](./serial_audio_playback.py) | Python script for high-quality audio playback from ESP32 serial stream. |
+| [`audio_visualizer.py`](./audio_visualizer.py) | Alternative Python visualizer for serial audio (with header support). |
+| [`serial-test/serial-test.ino`](./serial-test/serial-test.ino) | Arduino sketch for testing the mic using the Serial Plotter. |
+| [`mic-webserver-done-simple/mic-webserver-done-simple.ino`](./mic-webserver-done-simple/mic-webserver-done-simple.ino) | Simple web interface for live waveform display (uses Chart.js). |
+| [`waveform_mic-web-stream/waveform_mic-web-stream.ino`](./waveform_mic-web-stream/waveform_mic-web-stream.ino) | Advanced web interface with waveform history, live playback, and environment classification. |
+| [`dd-working/dd-working.ino`](./dd-working/dd-working.ino) | DumbDisplay/Bluetooth/USB interface for phone-based audio visualization and control. |
+| [`SpeakerTest/SpeakerTest.ino`](./SpeakerTest/SpeakerTest.ino) | Test tones and mic-to-speaker loopback for I2S speaker/amplifier. |
 | [`README.md`](./README.md) | This guide. Explains setup, usage, and file roles. |
 
 ---
 
 ## 🧑‍💻 How It Works
 
-1. **ESP32** reads audio from the I2S mic and sends it as 16-bit PCM samples over USB serial.
+1. **ESP32** reads audio from the I2S mic and sends it as 16-bit PCM samples over USB serial, Bluetooth, or WiFi.
 2. **Python scripts** on your PC read the serial data, process it, and either:
-   - Visualize and analyze the audio (`serial_audio_analyze.py`)
+   - Visualize and analyze the audio (`serial_audio_analyze.py`, `audio_visualizer.py`)
    - Play the audio directly (`serial_audio_playback.py`)
-3. **Noise reduction** and **environment classification** are performed in real time.
+3. **Web interfaces** let you view live waveforms and environment classification in your browser.
+4. **DumbDisplay** lets you analyze and control audio wirelessly on your phone.
+5. **Noise reduction** and **environment classification** are performed in real time.
 
 ---
 
@@ -116,6 +85,7 @@ pip install sounddevice numpy matplotlib scipy pyserial
 - **Noise Reduction:** DC removal, lowpass filtering, and spectral gating for clean audio.
 - **Environment Classification:** Detects if the environment is calm, noisy, or contains speech.
 - **Low Latency:** Small buffers for near real-time feedback.
+- **Bluetooth/Phone Visualization:** Use DumbDisplay for wireless, touch-friendly audio analysis.
 
 ---
 
@@ -124,6 +94,7 @@ pip install sounddevice numpy matplotlib scipy pyserial
 - [ESP32 Arduino core](https://github.com/espressif/arduino-esp32)
 - [INMP441 datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/inmp441.pdf)
 - [sounddevice docs](https://python-sounddevice.readthedocs.io/)
+- [DumbDisplay app](https://play.google.com/store/apps/details?id=io.github.astashov.dumbdisplay)
 
 ---
 
@@ -139,3 +110,5 @@ Pull requests and suggestions are welcome!
 If you build something cool with this, share it on GitHub and let the community know!
 
 ---
+
+**Repo:** [esp32-audio-i2s-test](https://github.com/Kamalbura/esp32-audio-i2s-test)
